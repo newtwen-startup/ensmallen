@@ -29,10 +29,11 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-
+message("${PROJECT_SOURCE_DIR}/../armadillo-code/include")
+message("${PROJECT_SOURCE_DIR}/../armadillo-code/include" "------------------------------------")
 find_path(ARMADILLO_INCLUDE_DIR
   NAMES armadillo
-  PATHS "$ENV{ProgramFiles}/Armadillo/include"
+  PATHS "$ENV{ProgramFiles}/Armadillo/include" ${PROJECT_SOURCE_DIR}/../armadillo-code/include
   )
 
 
@@ -366,7 +367,7 @@ mark_as_advanced(
   ARMADILLO_INCLUDE_DIR
   ARMADILLO_LIBRARIES)
 
-if (ARMADILLO_FOUND AND NOT TARGET Armadillo:Armadillo)
+if (ARMADILLO_FOUND AND NOT TARGET Armadillo::Armadillo)
   add_library(Armadillo::Armadillo INTERFACE IMPORTED)
   set_target_properties(Armadillo::Armadillo PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${ARMADILLO_INCLUDE_DIR}"
       INTERFACE_LINK_LIBRARIES "${ARMADILLO_LIBRARIES}")

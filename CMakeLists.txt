@@ -2,6 +2,7 @@
 # just installs the headers to the install location, and optionally builds the
 # test program.
 cmake_minimum_required(VERSION 3.3.2)
+option(ENSMALLEN_TEST "Enable ensmallen tests" OFF)
 if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release")  # ensure the tests are built with optimisation
 endif ()
@@ -14,8 +15,10 @@ option(USE_OPENMP "If available, use OpenMP for parallelization." ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake")
 
 # Set required C++ standard to C++11.
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+	set(CMAKE_CXX_STANDARD 11)
+	set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
 
 # Extract version from sources.
 set(ENSMALLEN_VERSION_FILE_NAME "${PROJECT_SOURCE_DIR}/include/ensmallen_bits/ens_version.hpp")
@@ -39,10 +42,12 @@ target_include_directories(ensmallen INTERFACE
   $<INSTALL_INTERFACE:include>)
 
 # Set warning flags for target.
-if(MSVC)
-  target_compile_options(ensmallen INTERFACE $<BUILD_INTERFACE:/Wall>)
-else()
-  target_compile_options(ensmallen INTERFACE $<BUILD_INTERFACE:-Wall -Wpedantic -Wunused-parameter>)
+if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+	if(MSVC)
+	  target_compile_options(ensmallen INTERFACE $<BUILD_INTERFACE:/W3>)
+	else()
+	  target_compile_options(ensmallen INTERFACE $<BUILD_INTERFACE:-Wall -Wpedantic -Wunused-parameter>)
+	endif()
 endif()
 
 # Find OpenMP and link it.
@@ -60,8 +65,11 @@ if(USE_OPENMP)
 endif()
 
 # Find Armadillo and link it.
-find_package(Armadillo 9.800.0 REQUIRED)
-target_link_libraries(ensmallen INTERFACE Armadillo::Armadillo)
+#include(FindArmadillo)
+message("${PROJECT_BINARY_DIR}/../armadillo-code/")
+#find_package(Armadillo 9.800.0 REQUIRED PATHS ${PROJECT_BINARY_DIR}/../armadillo-code)
+find_package(armadillo REQUIRED)
+target_link_libraries(ensmallen INTERFACE Armadillo)
 
 # Set helper variables for creating the version, config and target files.
 include(CMakePackageConfigHelpers)
@@ -97,5 +105,7 @@ install(FILES ${CMAKE_SOURCE_DIR}/include/ensmallen.hpp
         DESTINATION "${CMAKE_INSTALL_PREFIX}/include")
 
 # Enable testing and build tests.
+if (ENSMALLEN_TEST)
 enable_testing()
 add_subdirectory(tests)
+endif()
