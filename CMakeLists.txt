@@ -2,7 +2,7 @@
 # just installs the headers to the install location, and optionally builds the
 # test program.
 cmake_minimum_required(VERSION 3.3.2)
-option(ENSMALLEN_TEST "Enable ensmallen tests" OFF)
+option(ENSMALLEN_TEST "Enable ensmallen tests" ON)
 if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release")  # ensure the tests are built with optimisation
 endif ()
@@ -66,11 +66,25 @@ endif()
 
 # Find Armadillo and link it.
 #include(FindArmadillo)
-message("${PROJECT_BINARY_DIR}/../armadillo-code/")
-#find_package(Armadillo 9.800.0 REQUIRED PATHS ${PROJECT_BINARY_DIR}/../armadillo-code)
-find_package(armadillo REQUIRED)
-target_link_libraries(ensmallen INTERFACE Armadillo)
+message("${PROJECT_BINARY_DIR}/../armadillo-code/include")
+#find_package(Armadillo REQUIRED PATHS ${PROJECT_BINARY_DIR}/../armadillo-code NO_DEFAULT_PATH)
+#find_package(armadillo REQUIRED)
+  
+  if(Armadillo_FOUND)
+    message(STATUS "PackageName found.")
+    message(STATUS "Library directory: ${ARMADILLO_LIBRARIES}")
+    message(STATUS "Include directory: ${ARMADILLO_INCLUDE_DIRS}")
+	endif()
+#  message(STATUS "Armadillo include directory found: ${ARMADILLO_INCLUDE_DIR}")
+#add_dependencies(ensmallen armadillo)
+#target_include_directories(ensmallen INTERFACE ${ARMADILLO_INCLUDE_DIRS})
+#target_link_libraries(ensmallen INTERFACE ${ARMADILLO_LIBRARY_DIRS}/${CMAKE_BUILD_TYPE}/armadillo.lib)
+#target_link_libraries(ensmallen INTERFACE Armadillo::Armadillo)
 
+target_include_directories(ensmallen INTERFACE /../dependencies/armadillo-code/include)
+target_link_libraries(ensmallen INTERFACE armadillo)
+
+return()
 # Set helper variables for creating the version, config and target files.
 include(CMakePackageConfigHelpers)
 set(ENSMALLEN_CMAKE_DIR "lib/cmake/ensmallen" CACHE STRING
