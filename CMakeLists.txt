@@ -2,7 +2,7 @@
 # just installs the headers to the install location, and optionally builds the
 # test program.
 cmake_minimum_required(VERSION 3.3.2)
-option(ENSMALLEN_TEST "Enable ensmallen tests" ON)
+option(ENSMALLEN_TEST "Enable ensmallen tests" OFF)
 if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release")  # ensure the tests are built with optimisation
 endif ()
@@ -83,6 +83,11 @@ message("${PROJECT_BINARY_DIR}/../armadillo-code/include")
 
 target_include_directories(ensmallen INTERFACE /../dependencies/armadillo-code/include)
 target_link_libraries(ensmallen INTERFACE armadillo)
+
+if (ENSMALLEN_TEST)
+enable_testing()
+add_subdirectory(tests)
+endif()
 
 return()
 # Set helper variables for creating the version, config and target files.
