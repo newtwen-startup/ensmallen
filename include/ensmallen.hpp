@@ -137,5 +137,11 @@
 #include "ensmallen_bits/swats/swats.hpp"
 #include "ensmallen_bits/wn_grad/wn_grad.hpp"
 #include "ensmallen_bits/yogi/yogi.hpp"
+// NewTweN.
+#include "../ensmallenPatch/include/ensmallen_bits/de/shade.hpp"
+#include "../ensmallenPatch/include/ensmallen_bits/de/dem.hpp"
+#include "../ensmallenPatch/include/ensmallen_bits/de/deS.hpp"
+#include "../ensmallenPatch/include/ensmallen_bits/pso/psont.hpp"
+#include "../ensmallenPatch/include/ensmallen_bits/constraints/ConstraintsNT.hpp"
 
 #endif
